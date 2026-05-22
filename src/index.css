@@ -190,13 +190,13 @@ body {
   position: absolute;
   inset: -8px;
   border-radius: 50%;
-  border: 2px solid var(--gold2);
+  border: 2px solid #b040ff;
   animation: ringpulse 1s ease-in-out infinite;
   pointer-events: none;
 }
 @keyframes ringpulse {
-  0%,100% { transform: scale(1); opacity: 0.6; border-color: var(--gold2); }
-  50%      { transform: scale(1.05); opacity: 1; border-color: var(--gold3); }
+  0%,100% { transform: scale(1); opacity: 0.6; border-color: #b040ff; }
+  50%      { transform: scale(1.05); opacity: 1; border-color: #df80ff; }
 }
 
 .click-hint {
@@ -492,3 +492,11 @@ body {
   color: var(--deep);
   box-shadow: 0 0 20px var(--gold);
 }
+
+/* ── PURPLE THEME OVERRIDES ── */
+:root {
+  --purple: #b040ff;
+  --purple2: #df80ff;
+  --purple3: #7b00cc;
+}
+.click-hint { color: var(--purple) !important; text-shadow: 0 0 15px var(--purple); }
