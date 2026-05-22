@@ -1,0 +1,494 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #1a0e00;
+  --parchment: #f2e8c9;
+  --parchment2: #e8d8a8;
+  --parchment3: #d4bc80;
+  --gold: #c9922a;
+  --gold2: #f0c060;
+  --gold3: #ffd700;
+  --crimson: #8b1a1a;
+  --crimson2: #c0392b;
+  --deep: #2c1a00;
+  --shadow: rgba(0,0,0,0.7);
+  --glow: rgba(201,146,42,0.4);
+  --ember: rgba(200,80,20,0.5);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0500;
+}
+
+body {
+  font-family: 'IM Fell English', serif;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='4' fill='%23c9922a'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23ffd700'/%3E%3C/svg%3E") 16 16, crosshair;
+}
+
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#root {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.oracle-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(5,2,0,0.85) 100%);
+}
+
+/* ── TITLE ── */
+.oracle-title {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  text-align: center;
+  padding: 18px 20px 10px;
+  z-index: 10;
+  border-bottom: 2px solid var(--gold);
+  background: linear-gradient(to bottom, rgba(10,5,0,0.97), rgba(10,5,0,0.7));
+}
+.oracle-title h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1rem, 2.5vw, 1.8rem);
+  color: var(--gold2);
+  letter-spacing: 4px;
+  text-shadow: 0 0 30px var(--gold), 0 2px 4px #000;
+  line-height: 1.2;
+}
+.oracle-title p {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.55rem, 1vw, 0.8rem);
+  color: var(--gold);
+  letter-spacing: 6px;
+  opacity: 0.8;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gold);
+  font-size: 1.2rem;
+  margin: 6px 0;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+/* ── EYE ── */
+.eye-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  margin-top: 60px;
+}
+
+.eye-frame {
+  position: relative;
+  width: clamp(200px, 28vw, 320px);
+  height: clamp(200px, 28vw, 320px);
+  cursor: pointer;
+  filter: drop-shadow(0 0 30px var(--gold)) drop-shadow(0 0 60px var(--ember));
+  transition: filter 0.3s;
+}
+.eye-frame:hover {
+  filter: drop-shadow(0 0 50px var(--gold2)) drop-shadow(0 0 80px var(--ember));
+}
+.eye-svg { width: 100%; height: 100%; }
+
+.rune-ring {
+  position: absolute;
+  inset: -30px;
+  animation: runespin 12s linear infinite;
+  pointer-events: none;
+}
+.rune-ring2 {
+  position: absolute;
+  inset: -15px;
+  animation: runespin 8s linear infinite reverse;
+  pointer-events: none;
+}
+
+@keyframes runespin { to { transform: rotate(360deg); } }
+
+.spark {
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--gold2);
+  pointer-events: none;
+  animation: sparkfly var(--dur, 2s) ease-out var(--delay, 0s) infinite;
+  top: 50%; left: 50%;
+  opacity: 0;
+}
+@keyframes sparkfly {
+  0%   { transform: translate(-50%,-50%) rotate(var(--ang)) translateY(0); opacity: 1; width: 3px; height: 3px; }
+  100% { transform: translate(-50%,-50%) rotate(var(--ang)) translateY(-120px); opacity: 0; width: 1px; height: 1px; }
+}
+
+.oracle-status {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+  white-space: nowrap;
+}
+.oracle-status p {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.6rem, 1.1vw, 0.85rem);
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px var(--gold);
+  animation: textpulse 2s ease-in-out infinite;
+}
+
+@keyframes textpulse { 0%,100%{ opacity:0.7 } 50%{ opacity:1 } }
+
+.hidden-cam, .hidden-canvas {
+  position: fixed;
+  bottom: -500px; left: -500px;
+  width: 320px; height: 240px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── DETECTED RING ── */
+.detected-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid var(--gold2);
+  animation: ringpulse 1s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes ringpulse {
+  0%,100% { transform: scale(1); opacity: 0.6; border-color: var(--gold2); }
+  50%      { transform: scale(1.05); opacity: 1; border-color: var(--gold3); }
+}
+
+.click-hint {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: var(--gold);
+  white-space: nowrap;
+  animation: textpulse 1.5s ease-in-out infinite;
+}
+
+/* ── LOADING ── */
+.loading-rune {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5,2,0,0.9);
+  z-index: 50;
+  gap: 20px;
+}
+.loading-rune .rune-spin {
+  font-size: 3rem;
+  animation: runespin 1s linear infinite;
+  color: var(--gold);
+  text-shadow: 0 0 20px var(--gold);
+}
+.loading-rune p {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  color: var(--gold);
+  animation: textpulse 1s ease-in-out infinite;
+}
+
+/* ── GRIMOIRE MODAL ── */
+.reveal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5,2,0,0.93);
+  animation: fadeIn 0.6s ease;
+  overflow-y: auto;
+  padding: 20px;
+}
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+.grimoire {
+  position: relative;
+  max-width: 680px;
+  width: 100%;
+  background: var(--parchment);
+  border: 3px solid var(--gold);
+  box-shadow:
+    0 0 0 8px rgba(201,146,42,0.15),
+    0 0 0 9px var(--gold),
+    0 0 60px rgba(201,146,42,0.4),
+    inset 0 0 80px rgba(180,130,50,0.2);
+  animation: grimAppear 0.8s cubic-bezier(0.16,1,0.3,1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+@keyframes grimAppear {
+  from { transform: scale(0.7) rotateY(20deg); opacity: 0; }
+  to   { transform: scale(1) rotateY(0deg); opacity: 1; }
+}
+
+.grimoire::-webkit-scrollbar { width: 6px; }
+.grimoire::-webkit-scrollbar-track { background: var(--parchment2); }
+.grimoire::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+.grimoire-inner {
+  padding: clamp(20px,4vw,48px);
+}
+
+.grimoire::before, .grimoire::after {
+  content: '✦';
+  position: absolute;
+  font-size: 1.5rem;
+  color: var(--gold);
+  text-shadow: 0 0 10px var(--gold);
+}
+.grimoire::before { top: 10px; left: 14px; }
+.grimoire::after  { top: 10px; right: 14px; }
+
+.grim-corner-bl, .grim-corner-br {
+  position: absolute;
+  font-size: 1.5rem;
+  color: var(--gold);
+  text-shadow: 0 0 10px var(--gold);
+}
+.grim-corner-bl { bottom: 10px; left: 14px; }
+.grim-corner-br { bottom: 10px; right: 14px; }
+
+.archetype-seal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  animation: sealAppear 1s 0.2s both;
+}
+@keyframes sealAppear { from { transform:translateY(-20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+.archetype-icon {
+  font-size: clamp(3rem, 8vw, 5rem);
+  line-height: 1;
+  filter: drop-shadow(0 0 15px var(--gold));
+  animation: iconFloat 3s ease-in-out infinite;
+}
+@keyframes iconFloat { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
+
+.archetype-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  color: var(--crimson);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(139,26,26,0.4);
+  letter-spacing: 3px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.archetype-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.7rem, 1.5vw, 0.95rem);
+  color: var(--gold);
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.stats-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 14px 0;
+  flex-wrap: wrap;
+}
+.stat-badge {
+  background: var(--deep);
+  border: 1px solid var(--gold);
+  color: var(--gold2);
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  padding: 4px 12px;
+  text-transform: uppercase;
+}
+
+.grim-divider {
+  text-align: center;
+  color: var(--crimson);
+  font-size: 1.1rem;
+  letter-spacing: 8px;
+  margin: 16px 0;
+  opacity: 0.8;
+}
+
+.prophecy-scroll {
+  background: rgba(180,130,50,0.12);
+  border-left: 3px solid var(--gold);
+  border-right: 3px solid var(--gold);
+  padding: 16px 20px;
+  margin: 14px 0;
+  animation: scrollAppear 1s 0.4s both;
+  position: relative;
+}
+@keyframes scrollAppear { from{ opacity:0; transform:translateX(-10px); } to{ opacity:1; transform:translateX(0); } }
+
+.prophecy-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: var(--crimson);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.prophecy-text {
+  font-family: 'IM Fell English', serif;
+  font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+  color: var(--ink);
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.legend-block {
+  margin: 14px 0;
+  animation: scrollAppear 1s 0.6s both;
+}
+.legend-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: var(--crimson);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--parchment3);
+  padding-bottom: 4px;
+}
+.legend-text {
+  font-family: 'IM Fell English', serif;
+  font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+  color: var(--deep);
+  line-height: 1.8;
+}
+
+.abilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+  animation: scrollAppear 1s 0.8s both;
+}
+.ability-card {
+  background: var(--deep);
+  border: 1px solid var(--gold);
+  padding: 10px 12px;
+  text-align: center;
+}
+.ability-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+.ability-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: var(--gold2);
+  text-transform: uppercase;
+  display: block;
+}
+.ability-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  margin-top: 6px;
+  overflow: hidden;
+}
+.ability-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--crimson), var(--gold));
+  animation: fillBar 1s 1s both;
+}
+@keyframes fillBar { from { width: 0; } to { width: var(--pct); } }
+
+.fate-verse {
+  text-align: center;
+  padding: 14px;
+  margin: 14px 0;
+  border-top: 1px solid var(--parchment3);
+  border-bottom: 1px solid var(--parchment3);
+  animation: scrollAppear 1s 1s both;
+}
+.fate-verse p {
+  font-family: 'IM Fell English', serif;
+  font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+  color: var(--crimson);
+  font-style: italic;
+  line-height: 1.8;
+}
+.fate-verse cite {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 3px;
+  display: block;
+  margin-top: 8px;
+}
+
+.close-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: var(--deep);
+  border: 2px solid var(--gold);
+  color: var(--gold2);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+.close-btn:hover {
+  background: var(--gold);
+  color: var(--deep);
+  box-shadow: 0 0 20px var(--gold);
+}
