@@ -1,57 +1,67 @@
-# 🔮 El Oráculo de las Vidas Pasadas
+# 🔮 El Oráculo de las Vidas Pasadas v2.0
 
-Una aplicación React con temática medieval que detecta tu rostro usando la cámara
-y revela tu identidad en una vida pasada medieval, adaptada según tu edad y género.
+App React con temática medieval que detecta tu rostro y genera con IA una identidad
+medieval única cada vez — con imagen generada, historia, habilidades y verso poético.
 
-## ✨ Características
-
-- 👁️ **Ojo mágico** que sigue el movimiento del cursor en tiempo real
-- 📷 **Detección facial** automática con estimación de edad y género (face-api.js)
-- 📜 **Grimorio animado** con tu personaje medieval asignado al azar
-- 🧙 **10+ arquetipos medievales**: trovadores, magos, hechiceras, reyes, paladines, druidas, etc.
-- 🌟 Cada personaje tiene: profecía, leyenda, habilidades y verso poético
-- 🔥 Fondo animado con estrellas y brasas, runas vikingas giratorias
+## ✨ Novedades v2.0
+- 🤖 **Historias generadas por IA** (Claude Sonnet) — únicas e irrepetibles cada vez
+- 🎨 **Imagen del personaje** generada por IA (Pollinations.ai / Stable Diffusion) — gratis
+- 🧙 **40+ arquetipos medievales** distribuidos por edad y género
+- ✨ Loading animado mientras el oráculo "conjura" tu destino
 
 ## 🛠️ Instalación
 
 ### Requisitos
-- **Node.js** v18 o superior
-- **npm** v9 o superior
+- **Node.js** v18+
+- **API Key de Anthropic** (gratis en console.anthropic.com)
 
 ### Pasos
 
 ```bash
-# 1. Descomprimir el ZIP y entrar a la carpeta
+# 1. Entrar a la carpeta
 cd medieval-oracle
 
 # 2. Instalar dependencias
 npm install
 
-# 3. Iniciar el servidor de desarrollo
+# 3. Iniciar
 npm run dev
 ```
 
-4. Abrir el navegador en **http://localhost:3000**
-5. Permitir el acceso a la cámara cuando el navegador lo solicite
-6. ¡Esperar a que el ojo te detecte y hacer click!
+4. Abrir **http://localhost:3000**
+5. Permitir acceso a la cámara
+6. Primera vez: click en 🔑 API KEY (esquina superior derecha) e ingresa tu key de Anthropic
+7. La key se guarda en localStorage para usos futuros
 
-## 📦 Build para producción
+## 🔑 Obtener API Key de Anthropic
 
-```bash
-npm run build
-npm run preview
-```
+1. Ve a **https://console.anthropic.com**
+2. Crea una cuenta gratuita
+3. Ve a "API Keys" → "Create Key"
+4. Copia la key (comienza con `sk-ant-`)
+5. Pégala en la app cuando te la pida
 
-## 🎭 Arquetipos por edad y género
+## 🎭 Arquetipos disponibles (40+)
 
 | Grupo | Masculino | Femenino |
-|-------|-----------|----------|
-| Joven (< 28) | Trovador, Paje | Vidente, Arquera |
-| Adulto (28–52) | Mago, Rey, Paladín | Hechicera, Sanadora |
-| Mayor (52+) | Cronista, Druida | Reina Madre, Alquimista |
+|---|---|---|
+| Joven < 28 | Trovador, Paje, Aprendiz Mago, Ladrón, Príncipe, Monje Rebelde, Arquero | Vidente, Arquera, Hija del Herrero, Novicia Hechicera, Mensajera, Ladrona, Princesa Guerrera |
+| Adulto 28-52 | Mago, Rey, Paladín, Mercader, Nigromante, General, Inquisidor, Alquimista | Hechicera, Sanadora, Reina Guerrera, Espía, Bruja, Abadesa, Almirante |
+| Mayor 52+ | Cronista, Druida, Ermitaño, Maestro de Gremio, Hechicero Ancestral, Rey Depuesto | Reina Madre, Alquimista, Gran Vidente, Bruja Ancestral, Abadesa Legendaria, Estratega |
+
+## 📦 Build para producción / Vercel / Netlify
+
+```bash
+npm run build    # genera carpeta dist/
+npm run preview  # preview local del build
+```
+
+Para subir a Vercel:
+```bash
+npm i -g vercel && vercel
+```
 
 ## ⚠️ Notas
-
-- La detección funciona mejor con buena iluminación
-- Todo el procesamiento es **100% local** — ninguna imagen sale del dispositivo
-- Los modelos de IA se cargan desde CDN la primera vez (~segundos)
+- Todo procesamiento facial es **100% local** — ninguna imagen de tu cámara sale del dispositivo
+- Las historias se generan via API de Anthropic (requiere internet)
+- Las imágenes se generan via Pollinations.ai (requiere internet, puede tardar 5-15 segundos)
